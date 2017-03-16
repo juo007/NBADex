@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"/>
+	<link rel="stylesheet" href= "/css/managePlayers_compressed.css" type="text/css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
+	<title>AllPlayers</title>
+</head>
+<body>
+    <div id="app" v-cloak>
+	<nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="myTeam.html">NBADex</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="myTeam.html">My Team</a></li>
+                    <li class="active"><a href="managePlayers.html">Player Management</a></li>
+                    <li><a href="myTeamStats.html">View Stats</a></li>
+                    <li><a href="" id="LogOut">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	<div class="container">
+		<div class="row vcenter">
+			<h2 class="col-md-3">All Players</h2>
+			<div class="alert alert-danger fade in col-md-6" id="player-full" style="visibility: hidden;">
+				<p style="float:right;" id="close-btn" >×</p>
+                <p id="err-msg">Team is full, cannot add more players</p>
+			</div>
+			<button class="btn btn-primary btn-md col-md-offset-1 col-md-2" data-toggle="modal" data-target="#addPlayerModal">Add New Player</button>
+		</div>
+		<div class="modal fade" id="addPlayerModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+                        <div class="container-fluid" style="background:transparent;">
+                            <div class="row" style="display: flex; aglign-items: center">
+                                <h4 class="col-md-11">Add New Player</h4>
+                                <button type="button" class="close col-md-1" data-dismiss="modal">&times;</button>
+                            </div>
+                        </div>
+					</div>
+                    <div class="modal-body">
+                        <form class="form-player container-fluid">
+                            <div class="row">
+                                <div class="col-md-offset-0 col-md-4">
+                                    <div class="thumbnail" style="max-height:250px;max-width:250px;">
+                                        <img src="../img/avatar.jpg" alt="Upload player avatar" id="playerImg" class="img-responsive">
+                                        <div class="caption">
+                                            <input type="file" value="upload" id="imgFile"/>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <button v-on:click="addNewPlayer($event)" type="submit" class="btn btn-success btn-lg btn-block" data-dismiss="modal">Submit</button>
+                                    <button type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal" id="bot-btn">Cancel</button>
+                                </div>
+                                <div class="input_group col-md-8">
+                                    <div class="form-group">
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="name" placeholder="Name">
+                                        </div>
+                                        <br>
+                                    <div class="form-group">
+										<div class="col-sm-10">
+                                            <select class="form-control" id="position">
+												<option>PG</option>
+												<option>SG</option>
+												<option>SF</option>
+												<option>PF</option>
+												<option>C</option>
+											</select>
+										</div>
+                                    </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="PPG" placeholder="Point per game">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="FG" placeholder="Field Goal %">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="APG" placeholder="Assists per game">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="RPG" placeholder="Rebound per game">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="SPG" placeholder="Steal per game">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="BPG" placeholder="Block per game">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="PER" placeholder="Player efficiency rating">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<table class="table table-striped table-hover table-condensed">
+			<caption>List of all NBA players available to add to your team</caption>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Position</th>
+					<th>PPG</th>
+					<th>FG%</th>
+					<th>APG</th>
+					<th>RPG</th>
+					<th>SPG</th>
+					<th>BPG</th>
+					<th>PER</th>
+					<th>Edit Player</th>
+                    <th>Add to Team</th>
+                    <th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="player in players">
+                    <td id="pname">{{ player.name }}</td>
+					<td>{{ player.position }}</td>
+                    <td>{{ player.pointsPerGame }}</td>
+					<td>{{ player.fieldGoalPercentage }}</td>
+					<td>{{ player.assistsPerGame }}</td>
+					<td>{{ player.reboundsPerGame }}</td>
+					<td>{{ player.stealsPerGame }}</td>
+					<td>{{ player.blocksPerGame }}</td>
+					<td>{{ player.playerEfficiencyRating }}</td>
+					<td>
+						<button class="EditPlayerBtn" v-on:click="populate(player)" data-toggle="modal" data-target="#editPlayerModal">Update</button>
+					</td>
+                    <td>
+                        <button class="AddPlayersBtn" v-on:click="addToTeam(player)">Add</button>
+                    </td>
+                    <td><span class="glyphicon glyphicon-trash" aria-hidden="true" v-on:click="deletePlayer(player)"></span></td>
+                    <div class="modal fade" id="editPlayerModal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="container-fluid" style="background:transparent;">
+                                        <div class="row" style="display: flex; aglign-items: center">
+                                            <h4 class="col-md-11">Edit Player</h4>
+                                            <button type="button" class="close col-md-1" data-dismiss="modal">&times;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-player container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-offset-0 col-md-4">
+                                                <div class="thumbnail" style="max-height:250px;max-width:250px;">
+                                                    <img id="editImg" src="../img/avatar.jpg" alt="Upload player avatar" id="playerImg" class="img-responsive">
+                                                    <div class="caption">
+                                                        <input type="file" value="upload" id="imgFileEdit"/>
+                                                    </div>
+                                                </div>
+                                                <br><br>
+                                                <button v-on:click="editPlayer" type="submit" class="btn btn-success btn-lg btn-block" data-dismiss="modal">Submit</button>
+                                                <button type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal" id="bot-btn">Cancel</button>
+                                            </div>
+                                            <div class="input_group col-md-8">
+                                                <div class="form-group">
+                                                    <div class="col-sm-10">
+                                                        <input disabled type="text" class="form-control" id="editName" placeholder="Name">
+                                                    </div>
+                                                    <br>
+												<div class="form-group">
+													<div class="col-sm-10">
+														<select class="form-control" id="editPosition">
+															<option>PG</option>
+															<option>SG</option>
+															<option>SF</option>
+															<option>PF</option>
+															<option>C</option>
+														</select>
+													</div>
+												</div>
+                                                   <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editPPG" placeholder="Point per game">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editFG" placeholder="Field Goal %">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editAPG" placeholder="Asists per game">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editRPG" placeholder="Rebound per game">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editSPG" placeholder="Steal per game">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editBPG" placeholder="Block per game">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="editPER" placeholder="Player efficiency rating">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+	<footer class="footer">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2 col-md-offset-10">
+					<dl>
+						<dt>Created By</dt>
+						<dd>Juhyun James Oh</dd>
+						<dd>Zhisheng Lie</dd>
+						<dd>Kevin Kim</dd>
+					</dl>
+					<p>&copy; NBADex</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+    </div>
+</body>
+<script type="text/javascript" src="../js/managePlayers_compressed.js"></script>
+</html>
